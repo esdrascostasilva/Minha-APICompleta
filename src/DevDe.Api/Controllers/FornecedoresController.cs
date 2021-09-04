@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DevDe.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/fornecedores")]
     public class FornecedoresController : MainController
     {
         private readonly IFornecedorRepository _fornecedorRepository;
