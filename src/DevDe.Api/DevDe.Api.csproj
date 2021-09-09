@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\imagens\**" />
+    <Content Remove="wwwroot\imagens\**" />
+    <EmbeddedResource Remove="wwwroot\imagens\**" />
+    <None Remove="wwwroot\imagens\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DevIO.Business\DevIO.Business.csproj" />
     <ProjectReference Include="..\DevIO.Data\DevIO.Data.csproj" />
   </ItemGroup>
@@ -17,10 +24,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\imagens\" />
   </ItemGroup>
 
 

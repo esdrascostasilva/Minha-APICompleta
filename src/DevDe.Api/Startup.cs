@@ -28,10 +28,21 @@ namespace DevDe.Api
             { 
                 options.SuppressModelStateInvalidFilter = true;
             });
-     
-            services.AddControllers();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Default",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    //.AllowCredentials()
+                    );
+            });
+
+            services.AddControllers();
             services.ResolveDependencies();
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +52,8 @@ namespace DevDe.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("Default");
 
             app.UseHttpsRedirection();
 
