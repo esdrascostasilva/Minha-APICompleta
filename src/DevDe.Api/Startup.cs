@@ -24,24 +24,9 @@ namespace DevDe.Api
         {
             services.AddDbContext<MeuDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddAutoMapper(typeof(Startup));
-            services.Configure<ApiBehaviorOptions>(options =>
-            { 
-                options.SuppressModelStateInvalidFilter = true;
-            });
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("Default",
-                    builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    //.AllowCredentials()
-                    );
-            });
-
             services.AddControllers();
             services.ResolveDependencies();
-
+            services.WebApiConfig();
             
         }
 
@@ -52,19 +37,12 @@ namespace DevDe.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseCors("Default");
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
+            else
             {
-                endpoints.MapControllers();
-            });
+                app.UseHsts();
+            }
+
+            app.UseMvcConfiguration();
         }
     }
 }
