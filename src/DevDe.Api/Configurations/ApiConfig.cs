@@ -32,7 +32,7 @@ namespace DevDe.Api.Configurations
         {
             app.UseHttpsRedirection();
             app.UseCors("Default");
-            //app.UseMvc();
+            app.UseMvc();
 
             app.UseRouting();
             app.UseAuthorization();
