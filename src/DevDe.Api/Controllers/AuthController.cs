@@ -1,7 +1,13 @@
-﻿using DevDe.Api.ViewModels;
+﻿using DevDe.Api.Extensions;
+using DevDe.Api.ViewModels;
 using DevIO.Business.Intefaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DevDe.Api.Controllers
@@ -11,11 +17,14 @@ namespace DevDe.Api.Controllers
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly AppSettings _appSettings;
 
-        public AuthController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, INotificador notificador) : base(notificador)
+        public AuthController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, 
+                              INotificador notificador, IOptions<AppSettings> appSettings) : base(notificador)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _appSettings = appSettings.Value;
         }
 
         [HttpPost("criar-conta")]
@@ -35,7 +44,7 @@ namespace DevDe.Api.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                return CustomResponse(registerUser);
+                return CustomResponse(GerarJwt());
             }
             foreach (var error in result.Errors)
             {
@@ -55,7 +64,7 @@ namespace DevDe.Api.Controllers
             var result = await _signInManager.PasswordSignInAsync(loginUser.Email, loginUser.Senha, false, true);
 
             if (result.Succeeded)
-                return CustomResponse(loginUser);
+                return CustomResponse(GerarJwt());
             if (result.IsLockedOut)
             { 
                 NotificarErro("Usuário temporariamente bloqueado por várias tentativas inválidas de logon");
@@ -67,5 +76,21 @@ namespace DevDe.Api.Controllers
 
         }
 
+        private string GerarJwt()
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Segredo);
+            var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
+            {
+                Issuer = _appSettings.Emissor,
+                Audience = _appSettings.ValidoEm,
+                Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            });
+
+            var encodedToken = tokenHandler.WriteToken(token);
+
+            return encodedToken;
+        }
     }
 }
