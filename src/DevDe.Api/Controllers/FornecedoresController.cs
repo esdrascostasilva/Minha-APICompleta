@@ -20,8 +20,12 @@ namespace DevDe.Api.Controllers
         private readonly IEnderecoRepository _enderecoRepository;
         private readonly IMapper _mapper;
 
-        public FornecedoresController(IFornecedorRepository fornecedorRepository, IMapper mapper, IEnderecoRepository enderecoRepository,
-                                      IFornecedorService fornecedorService, INotificador notificador) : base(notificador)
+        public FornecedoresController(IFornecedorRepository fornecedorRepository, 
+                                      IMapper mapper, 
+                                      IEnderecoRepository enderecoRepository,
+                                      IFornecedorService fornecedorService, 
+                                      INotificador notificador,
+                                      IUser user) : base(notificador, user)
         {
             _fornecedorRepository = fornecedorRepository;
             _mapper = mapper;
@@ -53,6 +57,16 @@ namespace DevDe.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<FornecedorViewModel>> Adicionar(FornecedorViewModel fornecedorViewModel)
         {
+            //if (User.Identity.IsAuthenticated)
+            //{
+            //    var userName = User.Identity.Name;
+            //}
+
+            if (UsuarioAutenticado)
+            {
+                var userName = AppUser.Name;
+            }
+
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
 
