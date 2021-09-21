@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DevDe.Api.Controllers;
 using DevDe.Api.Extensions;
 using DevDe.Api.ViewModels;
 using DevIO.Business.Intefaces;
@@ -9,10 +10,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DevDe.Api.Controllers
+namespace DevDe.Api.V1.Controllers
 {
     [Authorize]
-    [Route("api/fornecedores")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/fornecedores")]
     public class FornecedoresController : MainController
     {
         private readonly IFornecedorRepository _fornecedorRepository;

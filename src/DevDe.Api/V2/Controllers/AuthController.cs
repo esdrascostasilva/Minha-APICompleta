@@ -1,4 +1,5 @@
-﻿using DevDe.Api.Extensions;
+﻿using DevDe.Api.Controllers;
+using DevDe.Api.Extensions;
 using DevDe.Api.ViewModels;
 using DevIO.Business.Intefaces;
 using Microsoft.AspNetCore.Identity;
@@ -12,9 +13,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevDe.Api.Controllers
+namespace DevDe.Api.V2.Controllers
 {
-    [Route("api/conta")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}")]
     public class AuthController : MainController
     {
         private readonly SignInManager<IdentityUser> _signInManager;
