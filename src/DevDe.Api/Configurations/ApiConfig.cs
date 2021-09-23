@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DevDe.Api.Configurations
 {
     public static class ApiConfig
     {
-        public static IServiceCollection WebApiConfig(this IServiceCollection services)
+        public static IServiceCollection AddApiConfig(this IServiceCollection services)
         {
+            services.AddControllers();
+
             services.AddApiVersioning(options =>
             {
                 options.AssumeDefaultVersionWhenUnspecified = true;
@@ -38,11 +36,12 @@ namespace DevDe.Api.Configurations
                     .AllowAnyHeader()
                     );
             });
+
             return services;
         }
 
-        public static IApplicationBuilder UseMvcConfiguration(this IApplicationBuilder app)
-        {
+        public static IApplicationBuilder UseApiConfig(this IApplicationBuilder app)
+        { 
             app.UseHttpsRedirection();
             app.UseCors("Default");
             app.UseRouting();
