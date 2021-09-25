@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="V1\Controllers\ProdutosController.cs" />
+    <Compile Remove="V2\Controllers\ProdutosController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DevIO.Business\DevIO.Business.csproj" />
     <ProjectReference Include="..\DevIO.Data\DevIO.Data.csproj" />
   </ItemGroup>
