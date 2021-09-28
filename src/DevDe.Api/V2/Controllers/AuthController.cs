@@ -4,6 +4,7 @@ using DevDe.Api.ViewModels;
 using DevIO.Business.Intefaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -22,16 +23,19 @@ namespace DevDe.Api.V2.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly AppSettings _appSettings;
+        private readonly ILogger _logger;
 
         public AuthController(SignInManager<IdentityUser> signInManager, 
                               UserManager<IdentityUser> userManager, 
                               INotificador notificador, 
                               IOptions<AppSettings> appSettings,
-                              IUser user) : base(notificador, user)
+                              IUser user,
+                              ILogger<AuthController> logger) : base(notificador, user)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _appSettings = appSettings.Value;
+            _logger = logger;
         }
 
         [HttpPost("criar-conta")]
@@ -71,7 +75,10 @@ namespace DevDe.Api.V2.Controllers
             var result = await _signInManager.PasswordSignInAsync(loginUser.Email, loginUser.Senha, false, true);
 
             if (result.Succeeded)
+            {
+                _logger.LogInformation("Usuario "+ loginUser.Email + " logado com sucesso");
                 return CustomResponse(await GerarJwt(loginUser.Email));
+            }
             if (result.IsLockedOut)
             { 
                 NotificarErro("Usuário temporariamente bloqueado por várias tentativas inválidas de logon");

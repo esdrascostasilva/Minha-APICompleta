@@ -1,4 +1,5 @@
 using DevDe.Api.Configurations;
+using DevDe.Api.Extensions;
 using DevIO.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,7 +29,7 @@ namespace DevDe.Api
             services.AddAutoMapper(typeof(Startup));
             services.AddApiConfig();
             services.AddSwaggerConfig();
-           
+            services.AddLoggingConfiguration();
             services.ResolveDependencies();
         }
 
@@ -45,7 +46,9 @@ namespace DevDe.Api
             }
 
             app.UseAuthentication();
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseApiConfig();
+            app.UseLoggingConfiguration();
             app.UseSwaggerConfig(provider);
            
         }
